@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Booking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #00aaff97;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 70px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2,
+        h4 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="Age"],
+        input[type="Sex"],
+        input[type="Consultation"],
+        input[type="Phone "],
+        input[type="date"],
+        input[type="email"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #confirmation {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1,
+        h2,
+        h4 {
+            text-align: center;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-gap: 10px;
+        }
+
+        .calendar-container {
+            padding-top: 50px;
+            padding-bottom: 40px;
+        }
+
+        .time-slot {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .time-slot.booked {
+            background-color: #FFD700;
+            /* Yellow for booked slots */
+        }
+
+        #appointment_heading {
+            padding-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Look For an Appointment</h2>
+        <form id="bookingForm" action="./send-email.php">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="Age">Age:</label>
+            <input type="Age" id="Age" name="Age" required>
+
+            <label for="Sex">Sex:</label>
+            <input type="Sex" id="Sex" name="Sex" required>
+
+            <label for="Consultation">Consultation Type:</label>
+            <input type="Consultation" id="Consultation" name="Consultation" required>
+
+            <label for="Phone ">Phone Number:</label>
+            <input type="Phone " id="Phone " name="Phone " required>
+
+            <label for="email">Email ID:</label>
+            <input type="email" id="email" name="email" required><br><br>
+
+            <label for="Date">Date:</label>
+            <input type="Date" id="Date" name="Date" required>
+
+            <input type="submit" value="Submit" href="./slots.html">
+        </form>
+        <div id="confirmation"></div>
+    </div>
+
+
+    <script src="script.js">
+        document.getElementById("bookingForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            // Fetch form data
+            const formData = new FormData(event.target);
+
+            // Display confirmation message
+            const confirmationDiv = document.getElementById("confirmation");
+            confirmationDiv.innerHTML = `
+                <p>Thank you, ${formData.get("name")}!</p>
+                <p>Your booking for ${formData.get("Sex")} at ${formData.get("time")} has been confirmed.</p>
+            `;
+        });
+
+    </script>
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Collect form data
+            const formData = new FormData(this);
+
+            // Convert time slot to a formatted string
+            const timeSlot = new Date(formData.get('timeSlot')).toLocaleString();
+
+            // Make a POST request to the server endpoint
+            fetch('/book-appointment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    doctor: formData.get('doctor'),
+                    timeSlot: timeSlot
+                })
+            })
+                .then(response => response.text())
+                .then(data => {
+                    // Display confirmation message
+                    document.getElementById('confirmation').innerText = data;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('confirmation').innerText = 'Error booking appointment';
+                });
+        });
+
+    </script>
+
+</body>
+
+</html>

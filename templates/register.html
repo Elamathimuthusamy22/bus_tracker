@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        input[type="tel"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: blue;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>Registration</h1>
+
+        <form id="registration-form" action="{{ url_for('register') }}" method="post">
+            <label for="username">Name:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <!-- <label for="address">Address:</label>
+            <input type="text" id="address" name="address">
+
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age">
+
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone">
+            <p id="phone-error" style="color: red; display: none;">Please enter a valid contact number (minimum 10
+                digits).</p> -->
+
+            <input type="submit" value="Register">
+        </form>
+        <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+    </div>
+    <!-- <script>
+        document.getElementById('registration-form').addEventListener('submit', function (event) {
+            var phoneInput = document.getElementById('phone');
+            var phoneError = document.getElementById('phone-error');
+            if (phoneInput.value.length < 10) {
+                phoneError.style.display = 'block';
+                event.preventDefault(); // Prevent form submission
+            } else {
+                phoneError.style.display = 'none';
+            }
+        });
+    </script> -->
+    <script>
+        $(document).ready(function () {
+            $('#registration-form').submit(function (event) {
+                event.preventDefault(); // Prevent form submission
+
+                // Submit the form data via AJAX
+                $.ajax({
+                    type: 'POST',
+                    url: '/register',
+                    data: $(this).serialize(), // Serialize the form data
+                    success: function (response) {
+                        if (response.success) {
+                            $('#message').html('<p style="color: green;">Registration successful! You can now log in.</p>').show();
+                        } else {
+                            $('#message').html('<p style="color: red;">Registration failed. Please try again.</p>').show();
+                        }
+                    },
+                    error: function () {
+                        $('#message').html('<p style="color: red;">Error occurred. Please try again later.</p>').show();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
